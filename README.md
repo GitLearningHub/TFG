@@ -46,7 +46,7 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
 
 
 
-## Introduction to deep learning
+## Introducción al Deep Learning
 
 > Be able to explain the major trends driving the rise of deep learning, and understand where and how it is applied today.
 
