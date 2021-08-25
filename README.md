@@ -678,3 +678,5 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
 - Ian tells all who wants to get into AI to get a Ph.D. or post your code on Github and the companies will find you.
 - Ian thinks that we need to start anticipating security problems with ML now and make sure that these algorithms are secure from the start instead of trying to patch it in retroactively years later.
 
+
+
