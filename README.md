@@ -6,19 +6,18 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
 ### Índice
 
    * [Introducción al Deep Learning](#introducción-al-deep-learning)
-      * [¿Qué es una Red Neuronal (Neural Network) NN?](#what-is-a-neural-network-nn)
-      * [Aprendizaje supervisado con redes neuronales](#supervised-learning-with-neural-networks)
-      * [Por qué está despegando el Deep Learning?](#why-is-deep-learning-taking-off)
-   * [Redes neuronales básicas](#neural-networks-basics)
-      * [Clasificación Binaria](#binary-classification)
-      * [Regresión Logística](#logistic-regression)
-      * [Coste de la función de regresión logística](#logistic-regression-cost-function)
-      * [Descenso de Gradiente](#gradient-descent)
-      * [Derivadas](#derivatives)
-      * [Grafos computacionales](#computation-graph)
-      * [Derivadas con grafos computacionales](#derivatives-with-a-computation-graph)
-      * [Descenso de Gradiente con regresión logística](#logistic-regression-gradient-descent)
-      * [Descenso del Gradiente en m ejemplos](#gradient-descent-on-m-examples)
+      * [¿Qué es una Red Neuronal (Neural Network) NN?](#qué-es-una-red-neuronal-neural-network-nn)
+      * [Aprendizaje supervisado con redes neuronales](#aprendizaje-supervisado-con-redes-neuronales)
+      * [¿Por qué está despegando el Deep Learning?](#por-qué-está-despegando-el-deep-learning)
+   * [Redes neuronales básicas](#redes-neuronales-básicas)
+      * [Clasificación Binaria](#clasificación-binaria)
+      * [Regresión Logística](#regresión-logística)
+      * [Coste de la función de regresión logística](#coste-de-la-función-de-regresión-logística)
+      * [Descenso de Gradiente](#descenso-de-gradiente)
+      * [Grafos computacionales](#grafos-computacionales)
+      * [Derivadas con grafos computacionales](#derivadas-con-grafos-computacionales)
+      * [Descenso de Gradiente con regresión logística](#descenso-de-gradiente-con-regresión-logística)
+      * [Descenso del Gradiente en m ejemplos](#descenso-del-gradiente-en-m-ejemplos)
       * [Vectorización](#vectorization)
       * [Vectorizando la regresión logística](#vectorizing-logistic-regression)
       * [Notas para Python y NumPy](#notes-on-python-and-numpy)
@@ -48,181 +47,147 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
 
 ## Introducción al Deep Learning
 
-> Be able to explain the major trends driving the rise of deep learning, and understand where and how it is applied today.
+### ¿Qué es una Red Neuronal (Neural Network) NN?
 
-### What is a (Neural Network) NN?
-
-- Single neuron == linear regression without applying activation(perceptron)
-- Basically a single neuron will calculate weighted sum of input(W.T*X) and then we can set a threshold to predict output in a perceptron. If weighted sum of input cross the threshold, perceptron fires and if not then perceptron doesn't predict.
-- Perceptron can take real values input or boolean values.
-- Actually, when w⋅x+b=0 the perceptron outputs 0.
-- Disadvantage of perceptron is that it only output binary values and if we try to give small change in weight and bais then perceptron can flip the output. We need some system which can modify the output slightly according to small change in weight and bias. Here comes sigmoid function in picture.
-- If we change perceptron with a sigmoid function, then we can make slight change in output.
-- e.g. output in perceptron = 0, you slightly changed weight and bias, output becomes = 1 but actual output is 0.7. In case of sigmoid, output1 = 0, slight change in weight and bias, output = 0.7. 
-- If we apply sigmoid activation function then Single neuron will act as Logistic Regression.
--  we can understand difference between perceptron and sigmoid function by looking at sigmoid function graph.
-
-- Simple NN graph:
+- Una neurona == regresión linear sin aplicar la activación (perceptrón).
+- Básicamente, una única neurona calculará la suma ponderada de la entrada (W.T*X) y, entonces, se establece el umbral para predecir el resultado del perceptrón. Si el la suma ponderada de entrada alcanza el umbral, el perceptrón lo devuelve.
+- El perceptrón puede tomar valores reales de entrada o lógicos.
+- Por lo tanto, si w⋅x+b=0, el perceptrón devuelve 0.
+- La desventaja del perceptrón es que solo devuelve valores binarios, y si se intenta realizar algún cambio pequeño en los pesos, puede cambiar el resultado. Para solucionar esto, aparece la función Sigmoid.
+- Si se cambia el perceptrón en la funcion sigmoid, solo devuelve un pequeño cambio en el resultado.
+- Si se aplica la funcion de activación de sigmoid, la red de una única neurona actuará como un regresión logística.
+- NN simple:
   - ![](Images/Others/01.jpg)
   - Image taken from [tutorialspoint.com](http://www.tutorialspoint.com/)
-- RELU stands for rectified linear unit is the most popular activation function right now that makes deep NNs train faster now.
-- Hidden layers predicts connection between inputs automatically, thats what deep learning is good at.
-- Deep NN consists of more hidden layers (Deeper layers)
+- RELU (rectified linear unit) es la función de activación más popular actual que permite entrenos de NNs profundas más rápidos.
+- Las capas ocultas predicen la conexión entre las entradas de forma automática, esto es lo que se le da bien al deep learning.
+- Una NN profunda consiste en más capas ocultas (capas más profundas)
   - ![](Images/Others/02.png)
   - Image taken from [opennn.net](http://www.opennn.net/)
-- Each Input will be connected to the hidden layer and the NN will decide the connections.
-- Supervised learning means we have the (X,Y) and we need to get the function that maps X to Y.
+- Cada entrada se conectará con la capa oculta y la NN decidirá las conexiones.
+- El entrenamiento supervisado significa que existe (X,Y) y es necesario conseguir la función que mapee X con Y.
 
-### Supervised learning with neural networks
+### Aprendizaje supervisado con redes neuronales
 
-- Different types of neural networks for supervised learning which includes:
-  - CNN or convolutional neural networks (Useful in computer vision)
-  - RNN or Recurrent neural networks (Useful in Speech recognition or NLP)
-  - Standard NN (Useful for Structured data)
-  - Hybrid/custom NN or a Collection of NNs types
-- Structured data is like the databases and tables.
-- Unstructured data is like images, video, audio, and text.
-- Structured data gives more money because companies relies on prediction on its big data.
+- Hay diferentes tipos de redes neuronales para aprendizaje supervisado:
+  - CNN o redes convolucionales (útiles para visión artificial)
+  - RNN o redes recurrentes (útiles para el reconocimiento de habla o NLP)
+  - Standard NN (útil para datos estructurados)
+  - Híbrida/personalizada o una colección de varios tipos
+- Los datos estructurados se refiere a bases de datos y tablas.
+- Los datos desestructurados se refieren a imagen, vídeo, audio y texto.
 
-### Why is deep learning taking off?
-
-- Deep learning is taking off for 3 reasons:
-  1. Data:
-     - Using this image we can conclude:
+### ¿Por qué está despegando el Deep Learning?
+  1. Datos:
        - ![](Images/11.png)
-     - For small data NN can perform as Linear regression or SVM (Support vector machine)
-     - For big data a small NN is better that SVM
-     - For big data a big NN is better that a medium NN is better that small NN.
-     - Hopefully we have a lot of data because the world is using the computer a little bit more
-       - Mobiles
-       - IOT (Internet of things)
-  2. Computation:
+     - Para una NN con pocos datos, se puede rendir con una regresión lineal o SVM (Support vector machine)
+     - Cuanto más datos usemos, es más probable necesitar redes más profundas
+  2. Computación:
      - GPUs.
-     - Powerful CPUs.
-     - Distributed computing.
+     - CPUs.
+     - Computación distribuída.
      - ASICs
-  3. Algorithm:
-     1. Creative algorithms has appeared that changed the way NN works.
-        - For example using RELU function is so much better than using SIGMOID function in training a NN because it helps with the vanishing gradient problem.
+  3. Algoritmos:
+ 		
+	- Creativos algoritmos que han aparecido han cambiado el modo de trabajar de las redes neuronales.
+        - Por ejemplo, RELU es mucho mejor que SIGMOID a la hora de entrenar ya que elimina el problema del gradiente.
 
   ​
 
-## Neural Networks Basics
+## Redes neuronales básicas
 
-> Learn to set up a machine learning problem with a neural network mindset. Learn to use vectorization to speed up your models.
+### Clasificación Binaria
 
-### Binary classification
-
-- Mainly he is talking about how to do a logistic regression to make a binary classifier.
+- Se centra en cómo realizar una regresión logística para hacer clasificaciones binarias.
   - ![log](Images/Others/03.png)
   - Image taken from [3.bp.blogspot.com](http://3.bp.blogspot.com)
-- He talked about an example of knowing if the current image contains a cat or not.
-- Here are some notations:
-  - `M is the number of training vectors`
-  - `Nx is the size of the input vector`
-  - `Ny is the size of the output vector`
-  - `X(1) is the first input vector`
-  - `Y(1) is the first output vector`
+- Por ejemplo, reconocer en una imagen si aparece o no un gato.
+- Anotaciones que serán usadas más adelante:
+  - `M es el número de vectores de entrenamiento`
+  - `Nx es el tamaño del vector de entrada`
+  - `Ny es el tamaño del vector de salida`
+  - `X(1) es el primer vector de entrada`
+  - `Y(1) es el primer vector de salida`
   - `X = [x(1) x(2).. x(M)]`
   - `Y = (y(1) y(2).. y(M))`
 - We will use python in this course.
-- In NumPy we can make matrices and make operations on them in a fast and reliable time.
+- Con NumPy (una librería de Python)  se pueden crear matrices y operar con ellas con solo una sentencia.
 
-### Logistic regression
+### Regresión Logística
 
-- Algorithm is used for classification algorithm of 2 classes.
-- Equations:
-  - Simple equation:	`y = wx + b`
-  - If x is a vector: `y = w(transpose)x + b`
-  - If we need y to be in between 0 and 1 (probability): `y = sigmoid(w(transpose)x + b)`
-  - In some notations this might be used: `y = sigmoid(w(transpose)x)`
-    - While `b` is `w0` of `w` and we add `x0 = 1`. but we won't use this notation in the course (Andrew said that the first notation is better).
-- In binary classification `Y` has to be between `0` and `1`.
-- In the last equation `w` is a vector of `Nx` and `b` is a real number
+- Algoritmo que es usado para la clasificación de 2 clases.
+- Ecuaciones:
+  - Simple:	`y = wx + b`
+  - Si x es un vector: `y = w(transposicion)x + b`
+  - Si se necesita que y esté entre 0 y 1 (probabilidad): `y = sigmoid(w(transposicion)x + b)`
+- En clasificación binaria `Y` toma valores entre `0` y `1`.
+- En la última ecuación, `w` es un vector de `Nx` y `b` un valor real.
 
-### Logistic regression cost function
+### Coste de la función de regresión logística
 
-- First loss function would be the square root error:  `L(y',y) = 1/2 (y' - y)^2`
-  - But we won't use this notation because it leads us to optimization problem which is non convex, means it contains local optimum points.
-- This is the function that we will use: `L(y',y) = - (y*log(y') + (1-y)*log(1-y'))`
-- To explain the last function lets see:
-  - if `y = 1` ==> `L(y',1) = -log(y')`  ==> we want `y'` to be the largest   ==> `y`' biggest value is 1
-  - if `y = 0` ==> `L(y',0) = -log(1-y')` ==> we want `1-y'` to be the largest ==> `y'` to be smaller as possible because it can only has 1 value.
-- Then the Cost function will be: `J(w,b) = (1/m) * Sum(L(y'[i],y[i]))`
-- The loss function computes the error for a single training example; the cost function is the average of the loss functions of the entire training set.
+- La primera función de pérdida sería la raíz del error cuadrático medio:  `L(y',y) = 1/2 (y' - y)^2`
+  - No será usada porque puede derivar en errores de optimización al tener posibles puntos óptimos locales.
+- Se usará: `L(y',y) = - (y*log(y') + (1-y)*log(1-y'))`
+- Explicación:
+  - Si `y = 1` ==> `L(y',1) = -log(y')`  ==> se busca que `y'` sea el mayor posible ==> el máximo de `y`' es 1
+  - Si `y = 0` ==> `L(y',0) = -log(1-y')` ==> se busca que `1-y'` el mayor posible ==> el mínimo `y'` para que resulte en valor 1.
+- La función de coste: `J(w,b) = (1/m) * Sum(L(y'[i],y[i]))`
+- La función de pérdida calcula el error para una sola muestra de entrenamiento; función de coste es la media de las funciones de pérdida de todo el conjunto de entrenamiento.
 
-### Gradient Descent
+### Descenso de Gradiente
 
-- We want to predict `w` and `b` that minimize the cost function.
-- Our cost function is convex.
-- First we initialize `w` and `b` to 0,0 or initialize them to a random value in the convex function and then try to improve the values the reach minimum value.
-- In Logistic regression people always use 0,0 instead of random.
-- The gradient decent algorithm repeats: `w = w - alpha * dw`
-  where alpha is the learning rate and `dw` is the derivative of `w` (Change to `w`)
-  The derivative is also the slope of `w`
-- Looks like greedy algorithms. the derivative give us the direction to improve our parameters.
+- Se desea `w` y `b` que minimicen la función de coste.
+- Es una función convexa.
+- Primero se inicializa `w` y `b` a 0,0 o valores aleatorios de la función y se intenta mejorar los valores para alcanzar el mínimo valor.
+- En la regresión logística, normalmente se usa 0,0 en vez de valores aleatorios.
+- El algoritmo del descenso de gradiente repite: `w = w - alpha * dw`
+  donde alpha es el ratio de aprendizaje y `dw` es la derivada de `w` además de la pendiente de `w`
+- La derivada permite conocer la dirección en la que modificar los parámetros de mejora.
 
 
-- The actual equations we will implement:
-  - `w = w - alpha * d(J(w,b) / dw)`        (how much the function slopes in the w direction)
-  - `b = b - alpha * d(J(w,b) / db)`        (how much the function slopes in the d direction)
+- La ecuación:
+  - `w = w - alpha * d(J(w,b) / dw)`        (cuánto cambia la pendiente en la dirección de w)
+  - `b = b - alpha * d(J(w,b) / db)`        (cuánto cambia la pendiente en la dirección de d)
 
-### Derivatives
 
-- We will talk about some of required calculus.
-- You don't need to be a calculus geek to master deep learning but you'll need some skills from it.
-- Derivative of a linear line is its slope.
-  - ex. `f(a) = 3a`                    `d(f(a))/d(a) = 3`
-  - if `a = 2` then `f(a) = 6`
-  - if we move a a little bit `a = 2.001` then `f(a) = 6.003` means that we multiplied the derivative (Slope) to the moved area and added it to the last result.
+### Grafos computacionales
 
-### More Derivatives examples
-
-- `f(a) = a^2`  ==> `d(f(a))/d(a) = 2a`
-  - `a = 2`  ==> `f(a) = 4`
-  - `a = 2.0001` ==> `f(a) = 4.0004` approx.
-- `f(a) = a^3`  ==> `d(f(a))/d(a) = 3a^2`
-- `f(a) = log(a)`  ==> `d(f(a))/d(a) = 1/a`
-- To conclude, Derivative is the slope and slope is different in different points in the function thats why the derivative is a function.
-
-### Computation graph
-
-- Its a graph that organizes the computation from left to right.
+- Es un grafo que organiza el cálculo de izquierda a derecha. Por lo que será de ayuda a la hora de determinar la dependencia entre los valores.
   - ![](Images/02.png)
 
-### Derivatives with a Computation Graph
+### Derivadas con grafos computacionales
 
-- Calculus chain rule says:
-  If `x -> y -> z`          (x effect y and y effects z)
-  Then `d(z)/d(x) = d(z)/d(y) * d(y)/d(x)`
-- The video illustrates a big example.
+- Según la regla de la cadena de cálculo:
+  Si `x -> y -> z`          (x afecta a 'y' y 'y' afecta a z)
+  Entonces `d(z)/d(x) = d(z)/d(y) * d(y)/d(x)`
+- Se muestra un ejemplo.
   - ![](Images/03.png)
-- We compute the derivatives on a graph from right to left and it will be a lot more easier.
-- `dvar` means the derivatives of a final output variable with respect to various intermediate quantities.
+- Calcular las derivadas en un grafo de derecha a izquierda, facilitará el trabajo.
+- `dvar` indica que las derivadas de un resultado final con respecto a cantidades intermedias.
 
-### Logistic Regression Gradient Descent
+### Descenso de Gradiente con regresión logística
 
-- In the video he discussed the derivatives of gradient decent example for one sample with two features `x1` and `x2`.
+- Se estudian las derivadas del descenso de gradiente para una muestra con dos características `x1` y `x2`.
   - ![](Images/04.png)
 
-### Gradient Descent on m Examples
+### Descenso del Gradiente en m ejemplos
 
-- Lets say we have these variables:
+- Se tienen las siguientes variables:
 
   ```
-  	X1                  Feature
-  	X2                  Feature
-  	W1                  Weight of the first feature.
-  	W2                  Weight of the second feature.
-  	B                   Logistic Regression parameter.
-  	M                   Number of training examples
-  	Y(i)                Expected output of i
+  	X1                  Característica
+  	X2                  Característica
+  	W1                  Peso de la primera característica.
+  	W2                  Peso de la segunda característica.
+  	B                   Parámetro de la regresión logística.
+  	M                   Número de los ejemplos de entrenamiento
+  	Y(i)                Valor esperado de i
   ```
 
-- So we have:
+- Entonces:
   ![](Images/09.png)
 
-- Then from right to left we will calculate derivations compared to the result:
+- De derecha a izquierda se calculan las derivadas comparadas con el resultado:
 
   ```
   	d(a)  = d(l)/d(a) = -(y/a) + ((1-y)/(1-a))
@@ -232,11 +197,12 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
   	d(B)  = d(z)
   ```
 
-- From the above we can conclude the logistic regression pseudo code:
+- Pseudo código de la regresión logística:
 
-  ```
-  	J = 0; dw1 = 0; dw2 =0; db = 0;                 # Devs.
-  	w1 = 0; w2 = 0; b=0;							# Weights
+  `
+
+  	J = 0; dw1 = 0; dw2 =0; db = 0;                 (# Derivadas.)
+  	w1 = 0; w2 = 0; b=0;							(# Pesos)
   	for i = 1 to m
   		# Forward pass
   		z(i) = W1*x1(i) + W2*x2(i) + b
@@ -257,13 +223,14 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
   	w1 = w1 - alpha * dw1
   	w2 = w2 - alpha * dw2
   	b = b - alpha * db
-  ```
+  
+`
 
-- The above code should run for some iterations to minimize error.
+- El código debería ejecutarse varias iteraciones para minimizar el error.
 
-- So there will be two inner loops to implement the logistic regression.
+- Por lo que habrán dos bucles anidados.
 
-- Vectorization is so important on deep learning to reduce loops. In the last code we can make the whole loop in one step using vectorization!
+- Es importante la vectorización en el deep learning para reducir los bucles.
 
 ### Vectorization
 
