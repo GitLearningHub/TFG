@@ -5,7 +5,7 @@ En este archivo Readme se inclurán los conceptos más significativos de los cur
 
 ### Índice
 
-   * [Introducción a las redes neuronales](#introduction-to-deep-learning)
+   * [Introducción al Deep Learning](#introducción-al-deep-learning)
       * [¿Qué es una Red Neuronal (Neural Network) NN?](#what-is-a-neural-network-nn)
       * [Aprendizaje supervisado con redes neuronales](#supervised-learning-with-neural-networks)
       * [Por qué está despegando el Deep Learning?](#why-is-deep-learning-taking-off)
