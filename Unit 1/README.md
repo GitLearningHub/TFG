@@ -11,10 +11,10 @@
       * [Clasificación Binaria](#clasificación-binaria)
       * [Regresión Logística](#regresión-logística)
       * [Coste de la función de regresión logística](#coste-de-la-función-de-regresión-logística)
-      * [Descenso de Gradiente](#descenso-de-gradiente)
+      * [Descenso del Gradiente](#descenso-del-gradiente)
       * [Grafos computacionales](#grafos-computacionales)
       * [Derivadas con grafos computacionales](#derivadas-con-grafos-computacionales)
-      * [Descenso de Gradiente con regresión logística](#descenso-de-gradiente-con-regresión-logística)
+      * [Descenso del Gradiente con regresión logística](#descenso-del-gradiente-con-regresión-logística)
       * [Descenso del Gradiente en m ejemplos](#descenso-del-gradiente-en-m-ejemplos)
       * [Vectorización](#vectorización)
       * [Vectorizando la regresión logística](#vectorizando-la-regresión-logística)
@@ -28,7 +28,7 @@
       * [Función de activación](#función-de-activación)
       * [Por qué se necesitan funciones de activación no lineales?](#por-qué-se-necesitan-funciones-de-activación-no-lineales)
       * [Derivadas de las funciones de activación](#derivadas-de-las-funciones-de-activación)
-      * [Descenso de gradiente para redes neuronales](#descenso-de-gradiente-para-redes-neuronales)
+      * [Descenso del gradiente para redes neuronales](#descenso-del-gradiente-para-redes-neuronales)
       * [Inicialización aleatoria](#inicializaciónaleatoria)
    * [Redes neuronales profundas](#redes-neuronales-profundas)
       * [Redes neuronales profundas de L-capas](#redes-neuronales-profundas-de-l-capas)
@@ -130,13 +130,13 @@
 - La función de coste: `J(w,b) = (1/m) * Sum(L(y'[i],y[i]))`
 - La función de pérdida calcula el error para una sola muestra de entrenamiento; función de coste es la media de las funciones de pérdida de todo el conjunto de entrenamiento.
 
-### Descenso de Gradiente
+### Descenso del Gradiente
 
 - Se desea `w` y `b` que minimicen la función de coste.
 - Es una función convexa.
 - Primero se inicializa `w` y `b` a 0,0 o valores aleatorios de la función y se intenta mejorar los valores para alcanzar el mínimo valor.
 - En la regresión logística, normalmente se usa 0,0 en vez de valores aleatorios.
-- El algoritmo del descenso de gradiente repite: `w = w - alpha * dw`
+- El algoritmo del descenso del gradiente repite: `w = w - alpha * dw`
   donde alpha es el ratio de aprendizaje y `dw` es la derivada de `w` además de la pendiente de `w`
 - La derivada permite conocer la dirección en la que modificar los parámetros de mejora.
 
@@ -161,9 +161,9 @@
 - Calcular las derivadas en un grafo de derecha a izquierda, facilitará el trabajo.
 - `dvar` indica que las derivadas de un resultado final con respecto a cantidades intermedias.
 
-### Descenso de Gradiente con regresión logística
+### Descenso del Gradiente con regresión logística
 
-- Se estudian las derivadas del descenso de gradiente para una muestra con dos características `x1` y `x2`.
+- Se estudian las derivadas del descenso del gradiente para una muestra con dos características `x1` y `x2`.
   - ![](Images/04.png)
 
 ### Descenso del Gradiente en m ejemplos
@@ -267,7 +267,7 @@
 
 	 	 v = image.reshape(image.shape[0]*image.shape[1]*image.shape[2],1)
 
-- El descenso de gradiente converge antes si se normalizan las matrices de entrada.
+- El descenso del gradiente converge antes si se normalizan las matrices de entrada.
 
 ### Notas generales
 
@@ -277,7 +277,7 @@
   - Bucle.
     - Calcular la pérdida actual (propagación hacia adelante)
     - Calcular el gradiente actual (propagación hacia atrás)
-    - Actualizar parámetros (descenso de gradiente)
+    - Actualizar parámetros (descenso del gradiente)
 - Es importante preprocesar el conjunto de datos.
 - Ajustar el ratio de aprendizaje (es un ejemplo de hiperparámetro) puede suponer una gran mejora del algoritmo.
 - [kaggle.com](kaggle.com) es un buen lugar para conjuntos de datos y competiciones.
@@ -361,7 +361,7 @@
 ### Función de activación
 
 - A veces es mejor usar otra función que no sea sigmoid.
-- Sigmoid puede tener problemas de descenso de gradiente donde las actualizaciones son muy pequeñas.
+- Sigmoid puede tener problemas de descenso del gradiente donde las actualizaciones son muy pequeñas.
 - El rango de la función Sigmoid es [0,1]
   `A = 1 / (1 + np.exp(-z)) # donde z es la matriz de entrada`
 - La función de activación Tanh tiene un rango de [-1,1]   (versión modificada de sigmoid)
@@ -372,7 +372,7 @@
 		    A = np.tanh(z)   # donde z es la matriz de entrada
 
 - En la función de activación de las capas ocultas, la media del resultado de salida es más cercana a 0, así que ajusta mejor los datos para la siguiente capa.
-- Tanto en Sigmoid como Tanh, si los las entradas son demasiadas o muy pocas, las variaciones se acercarán a 0 y llevará a problemas en el descenso de gradiente.
+- Tanto en Sigmoid como Tanh, si los las entradas son demasiadas o muy pocas, las variaciones se acercarán a 0 y llevará a problemas en el descenso del gradiente.
 - RELU es una función que resuelve este problema.
   `RELU = max(0,z) # si z es negativa, la variación es 0 y si z es positiva, la variación permanece lineal.`
 - Si la clasificación está entre 0 y 1, usar una activación de salida como sigmoid u otras como RELU.
@@ -422,7 +422,7 @@
 		            1     if z >= 0   }
   
 
-### Descenso de gradiente para redes neuronales
+### Descenso del gradiente para redes neuronales
 - Se verá la propagación hacia atrás de forma completa
 - Gradient descent:
   - Parámetros de la NN:
@@ -471,7 +471,11 @@
 
 - Inicializar todos los pesos con 0 no funcionará (el valor de bias, b, sí se puede):
   - Todas las unidades ocultas serán identicas y ejecutarán la misma función.
-  - En cada iteración del descenso de gradiente, todas las neuronas ocultas se actualizarán de forma idéntica.
+  - En cada iteración del descenso del
+  - 
+  - 
+  - 
+  -  gradiente, todas las neuronas ocultas se actualizarán de forma idéntica.
 
 - Para solucionarlo, inicializamos las W con pequeños valores aleatorios:
 
