@@ -1,414 +1,404 @@
-# Structuring Machine Learning Projects
+# Estructurando proyectos de machine learning
 
-## Table of contents
-   * [ML Strategy 1](#ml-strategy-1)
-      * [Why ML Strategy](#why-ml-strategy)
-      * [Orthogonalization](#orthogonalization)
-      * [Single number evaluation metric](#single-number-evaluation-metric)
-      * [Satisfying and Optimizing metric](#satisfying-and-optimizing-metric)
-      * [Train/dev/test distributions](#traindevtest-distributions)
-      * [Size of the dev and test sets](#size-of-the-dev-and-test-sets)
-      * [When to change dev/test sets and metrics](#when-to-change-devtest-sets-and-metrics)
-      * [Why human-level performance?](#why-human-level-performance)
-      * [Avoidable bias](#avoidable-bias)
-      * [Understanding human-level performance](#understanding-human-level-performance)
-      * [Surpassing human-level performance](#surpassing-human-level-performance)
-      * [Improving your model performance](#improving-your-model-performance)
-   * [ML Strategy 2](#ml-strategy-2)
-      * [Carrying out error analysis](#carrying-out-error-analysis)
-      * [Cleaning up incorrectly labeled data](#cleaning-up-incorrectly-labeled-data)
-      * [Build your first system quickly, then iterate](#build-your-first-system-quickly-then-iterate)
-      * [Training and testing on different distributions](#training-and-testing-on-different-distributions)
-      * [Bias and Variance with mismatched data distributions](#bias-and-variance-with-mismatched-data-distributions)
-      * [Addressing data mismatch](#addressing-data-mismatch)
-      * [Transfer learning](#transfer-learning)
-      * [Multi-task learning](#multi-task-learning)
-      * [What is end-to-end deep learning?](#what-is-end-to-end-deep-learning)
-      * [Whether to use end-to-end deep learning](#whether-to-use-end-to-end-deep-learning)
+## Índice
+   * [Estrategia de ML 1](#estrategia-de-ml-1)
+      * [¿Por qué estrategia de ML?](#por-qué-estrategia-de-ml)
+      * [Ortogonalización](#ortogonalización)
+      * [Métrica de evaluación de un único número](#métrica-de-evaluación-de-un-único-número)
+      * [Métrica de satisfacción y optimización](#métrica-de-satisfacción-y-optimización)
+      * [Distribuciones Train/dev/test](#distribuciones-traindevtest)
+      * [Tamaño de los dev y test set](#tamaño-de-los-dev-y-test-set)
+      * [Cuándo cambiar los dev/test sets y métricas](#cuándo-cambiar-los-devtest-sets-y-métricas)
+      * [¿Por qué el desempeño a nivel humano?](#por-qué-el-desempeño-a-nivel-humano)
+      * [Bias evitable](#bias-evitable)
+      * [Comprendiendo el desempeño a nivel humano](#comprendiendo-el-desempeño-a-nivel-humano)
+      * [Sobrepasando el nivel de desempeño humano](#sobrepasando-el-nivel-de-desempeño-humano)
+      * [Mejorando el rendimiento del modelo](#mejorando-el-rendimiento-del-modelo)
+   * [Estrategia de ML 2](#estrategia-de-ml-2)
+      * [Realización de análisis de errores](#realización-de-análisis-de-errores)
+      * [Limpiando datos incorrectamente etiquetados](#limpiando-datos-incorrectamente-etiquetados)
+      * [Contruir el primer sistema rápidamente, después iterar](#contruir-el-primer-sistema-rápidamente-después-iterar)
+      * [Entrenando y testeando en distribuciones diferentess](#entrenando-y-testeando-en-distribuciones-diferentess)
+      * [Bias y varianza con distribuciones de datos disparejos](#bias-y-varianza-con-distribuciones-de-datos-disparejos)
+      * [Abordar la discrepancia de datos](#abordar-la-discrepancia-de-datos)
+      * [Aprendizaje por transferencia](#aprendizaje-por-transferencia)
+      * [Aprendizaje multi-tarea](#aprendizaje-multi-tarea)
+      * [¿Qué es el aprendizaje profundo de extremo a extremo?](#qué-es-el-aprendizaje-profundo-de-extremo-a-extremo)
+      * [Cuándo usar end-to-end deep learning](#cuándo-usar-end-to-end-deep-learning)
 
 
-## ML Strategy 1
+## Estrategia de ML 1
 
-### Why ML Strategy
+### ¿Por qué estrategia de ML?
 
-- You have a lot of ideas for how to improve the accuracy of your deep learning system:
-  - Collect more data.
-  - Collect more diverse training set.
-  - Train algorithm longer with gradient descent.
-  - Try different optimization algorithm (e.g. Adam).
-  - Try bigger network.
-  - Try smaller network.
-  - Try dropout.
-  - Add L2 regularization.
-  - Change network architecture (activation functions, # of hidden units, etc.)
-- This course will give you some strategies to help analyze your problem to go in a direction that will help you get better results.
+- Hay muchas ideas sobre cómo mejorar la precisión del sistema de deep learning:
+  - Conseguir más datos.
+  - Conseguir un training set más diverso.
+  - Entrenar el algoritmo durante más tiempo con descenso del gradiente.
+  - Probar distintos algoritmos de optimización.
+  - Probar aumentar el tamaño de la red.
+  - Probar reducir el tamaño de la red.
+  - Probar dropout.
+  - Añadir regularización L2.
+  - Cambiar la arquitectura de la red (funciones de activación, No. de unidades ocultas, etc.).
 
-### Orthogonalization
+### Ortogonalización
 
-- Some deep learning developers know exactly what hyperparameter to tune in order to try to achieve one effect. This is a process we call orthogonalization.
-- In orthogonalization, you have some controls, but each control does a specific task and doesn't affect other controls.
-- For a supervised learning system to do well, you usually need to tune the knobs of your system to make sure that four things hold true - chain of assumptions in machine learning:
-  1. You'll have to fit training set well on cost function (near human level performance if possible).
-     - If it's not achieved you could try bigger network, another optimization algorithm (like Adam)...
-  2. Fit dev set well on cost function.
-     - If its not achieved you could try regularization, bigger training set...
-  3. Fit test set well on cost function.
-     - If its not achieved you could try bigger dev. set...
-  4. Performs well in real world.
-     - If its not achieved you could try change dev. set, change cost function...
+- Es el proceso de ajustar determinados parámetros en concreto para conseguir determinados efectos.
+- Es necesario ajustar el sistema para conseguir 4 objetivos:
+  1. Hay que ajustar el training set bien en la función de coste (cerca al rendimiento humano si es posible).
+     - Si no es posible, intentar una red mayor, otro algoritmo de optimización...
+  2. Ajustar el dev set bien en la función de coste.
+     - Si no se consigue, intentar regularizar, un training set mayor...
+  3. Ajustar bien el test set en la función de coste.
+     - Si no se consigue, intentar aumentar el dev set...
+  4. Buen rendimiento en el mundo real.
+     - Si no se consigue, cambiar el dev set, cambiar la función de coste...
 
-### Single number evaluation metric
+### Métrica de evaluación de un único número
 
-- Its better and faster to set a single number evaluation metric for your project before you start it.
-- Difference between precision and recall (in cat classification example):
-  - Suppose we run the classifier on 10 images which are 5 cats and 5 non-cats. The classifier identifies that there are 4 cats, but it identified 1 wrong cat.
-  - Confusion matrix:
+- Es mejor y más rápido establecer una métrica de evaluzación de un único número para el proyecto antes de comenzarlo.
+- Direfenciar entre precición y recall:
+  - Si ejecutamos el clasificador con 10 imágenes donde 5 son gatos y 5 no. El clasificador identifica que 4 son gatos, pero identifica de forma erronea un gato.
+  - Matriz de confusión:
 
-      |                | Predicted cat  | Predicted non-cat |
-      | -------------- | -------------- | ----------------- |
-      | Actual cat     | 3              | 2                 |
-      | Actual non-cat | 1              | 4                 |
-  - **Precision**: percentage of true cats in the recognized result: P = 3/(3 + 1) 
-  - **Recall**: percentage of true recognition cat of the all cat predictions: R = 3/(3 + 2)
-  - **Accuracy**: (3+4)/10
-- Using a precision/recall for evaluation is good in a lot of cases, but separately they don't tell you which algothims is better. Ex:
+		      |                   | Gatos predichos  | No-gatos predichos|
+		      | ----------------  | -----------------| ----------------- |
+		      | Gatos actuales 	  | 3                | 2                 |
+		      | No-gatos actuales | 1                | 4                 |
+  - **Precisión**: porcentaje de gatos reales en los resultados reconocidos: P = 3/(3 + 1) 
+  - **Recall**: porcentaje de gatos reconocidos correctamente del total real: R = 3/(3 + 2)
+  - **Acierto**: (3+4)/10
+- Usando precisión/recall para evaluar es correcto en muchos casos, pero de forma separada no indican qué algoritmo es mejor. Ej:
 
-  | Classifier | Precision | Recall |
-  | ---------- | --------- | ------ |
-  | A          | 95%       | 90%    |
-  | B          | 98%       | 85%    |
-- A better thing is to combine precision and recall in one single (real) number evaluation metric. There a metric called `F1` score, which combines them
-  - You can think of `F1` score as an average of precision and recall
+		  | Classifier | Precision | Recall |
+		  | ---------- | --------- | ------ |
+		  | A          | 95%       | 90%    |
+		  | B          | 98%       | 85%    |
+- Una mejor opción es combinar ambos valores para obtener un resultado. La puntuación `F1`
+  - `F1` se puede considerar como el promedio de ambos
     `F1 = 2 / ((1/P) + (1/R))`
 
-### Satisfying and Optimizing metric
+### Métrica de satisfacción y optimización
 
-- Its hard sometimes to get a single number evaluation metric. Ex:
+- En ocasiones cuesta obtener la métrica de evaluación de un único número. Ej:
 
-  | Classifier | F1   | Running time |
-  | ---------- | ---- | ------------ |
-  | A          | 90%  | 80 ms        |
-  | B          | 92%  | 95 ms        |
-  | C          | 92%  | 1,500 ms     |
-- So we can solve that by choosing a single optimizing metric and decide that other metrics are satisfying. Ex:
-  ```
-  Maximize F1                     # optimizing metric
-  subject to running time < 100ms # satisficing metric
-  ```
-- So as a general rule:
-  ```
-  Maximize 1     # optimizing metric (one optimizing metric)
-  subject to N-1 # satisficing metric (N-1 satisficing metrics)
-  ```
+		  |Clasificador| F1   |Tiempo de ejec|
+		  | ---------- | ---- | ------------ |
+		  | A          | 90%  | 80 ms        |
+		  | B          | 92%  | 95 ms        |
+		  | C          | 92%  | 1,500 ms     |
+- Por lo que se puede escoger en función de otras métricas que interesen. Ej:
 
-### Train/dev/test distributions
+	Maximizar F1                     # métrica de optimización
+	tiempo de ejecución < 100ms 	 # métrica de satisfacción
 
-- Dev and test sets have to come from the same distribution.
-- Choose dev set and test set to reflect data you expect to get in the future and consider important to do well on.
-- Setting up the dev set, as well as the validation metric is really defining what target you want to aim at.
+- Como regla general:
+ 
+		maximizar 1     # métrica de optimización (una)
+		sujeto a N-1 #  métrica de satisfacción (N-1)
+		 
 
-### Size of the dev and test sets
+### Distribuciones Train/dev/test 
 
-- An old way of splitting the data was 70% training, 30% test or 60% training, 20% dev, 20% test. 
-- The old way was valid for a number of examples ~ <100000 
-- In the modern deep learning if you have a million or more examples a reasonable split would be 98% training, 1% dev, 1% test. 
+- Los sets dev y test tienen que venir de la misma distribución.
+- Escoger un dev set y test set que reflejen los datos que se eperan conseguir en el futuro.
+- Establecer el dev set, al igual que la métrica de validación define el objetivo al que se apunta.
 
-### When to change dev/test sets and metrics
+### Tamaño de los dev y test set
 
-- Let's take an example. In a cat classification example we have these metric results:
+- Una forma de dividir los datos era 70% training, 30% test o 60% training, 20% dev, 20% test. 
+- Esta división era válida para un número de muestras ~ <100000 
+- En los sistemas modernos se posee millones de datos o más. Sería más acertado 98% training, 1% dev, 1% test. 
 
-  | Metric      | Classification error                                         |
-  | ----------- | ------------------------------------------------------------ |
-  | Algorithm A | 3% error (But a lot of porn images are treated as cat images here) |
-  | Algorithm B | 5% error                                                     |
-  - In the last example if we choose the best algorithm by metric it would be "A", but if the users decide it will be "B"
-  - Thus in this case, we want and need to change our metric. 
+### Cuándo cambiar los dev/test sets y métricas
+
+- En el ejemplo de la clasificación de gatos, se tenía:
+
+		  | Métrica     | Error de clasificación|
+		  | ----------- | ------------------------------------------------------------ |
+		  | Algoritmo A | 3% error (Pero imágenes porno son consideradas gatos)        |
+		  | Algoritmo B | 5% error                                                     |
+
+  - En este caso se cambiaría la métrica. 
   - `OldMetric = (1/m) * sum(y_pred[i] != y[i] ,m)`
-    - Where m is the number of Dev set items.
+    - Donde m es el número de elementos del dev set.
   - `NewMetric = (1/sum(w[i])) * sum(w[i] * (y_pred[i] != y[i]) ,m)`
-    - where:
-       - `w[i] = 1                   if x[i] is not porn`
-       - `w[i] = 10                 if x[i] is porn`
+    - Donde:
+       - `w[i] = 1                   si x[i] no es porno`
+       - `w[i] = 10                 si x[i] es porno`
 
-- This is actually an example of an orthogonalization where you should take a machine learning problem and break it into distinct steps: 
+- Este es un ejemplo de ortogonalización donde un problema habría que separarlo en distintos pasos:
+	1. Averiguar cómo definir una métrica que recoge lo que se desea realizar - se selecciona el objetivo. 
+	2. Preocuparse de que la precisión del objetivo en la métrica sea acertada.
 
-  1. Figure out how to define a metric that captures what you want to do - place the target. 
-  2. Worry about how to actually do well on this metric - how to aim/shoot accurately at the target.
+- Conclusión: Si se realiza bien la métrica + los sets dev/set no se ajustan a un correcto funcionamiento en la aplicación, cambiar la métrica y/o los dev/test set.
 
-- Conclusion: if doing well on your metric + dev/test set doesn't correspond to doing well in your application, change your metric and/or dev/test set.
+### ¿Por qué el desempeño a nivel humano?
 
-### Why human-level performance?
-
-- We compare to human-level performance because of two main reasons:
-  1. Because of advances in deep learning, machine learning algorithms are suddenly working much better and so it has become much more feasible in a lot of application areas for machine learning algorithms to actually become competitive with human-level performance. 
-  2. It turns out that the workflow of designing and building a machine learning system is much more efficient when you're trying to do something that humans can also do.
-- After an algorithm reaches the human level performance the progress and accuracy slow down.
+- Se compara con el desempeño humano por dos razones:
+  1. Por los avances, los algoritmos son cada vez más rápidos y aplicables a más campos de aplicación hasta el punto de competir con el desempeño humano. 
+  2. El flujo de trabajo de diseñar y contruir los sistemas de aprendizaje son mucho mucho más eficientes cuando se trata de una tarea que podría realizar una persona.
+- Cuando se alcanza el desempeño humano, el progreso y la precisión se frenan.
     ![01- Why human-level performance](Images/01-_Why_human-level_performance.png)
-- You won't surpass an error that's called "Bayes optimal error".
-- There isn't much error range between human-level error and Bayes optimal error.
-- Humans are quite good at a lot of tasks. So as long as Machine learning is worse than humans, you can:
-  - Get labeled data from humans.
-  - Gain insight from manual error analysis: why did a person get it right?
-  - Better analysis of bias/variance.
+- No se puede pasar pasar del llamano "Error óptimo de Bayes".
+- No hay mucho margen entre este y el humano.
+- Los humanos somos buenos en muchas tareas. Mientras que el machine learning sea peor que los humanos, se puede:
+  - Establecer etiquetas.
+  - Obtener información a partir del análisis manual de errores: ¿por qué una persona lo hizo bien?
+   - Mejor análisis de bias/varianza.
 
-### Avoidable bias
+### Bias evitable
 
-- Suppose that the cat classification algorithm gives these results:
+- Suponer de la clasificación de gatos:
 
-  | Humans             | 1%   | 7.5% |
-  | ------------------ | ---- | ---- |
-  | **Training error** | 8%   | 8%   |
-  | **Dev Error**      | 10%  | 10%  |
-  - In the left example, because the human level error is 1% then we have to focus on the **bias**.
-  - In the right example, because the human level error is 7.5% then we have to focus on the **variance**.
-  - The human-level error as a proxy (estimate) for Bayes optimal error. Bayes optimal error is always less (better), but human-level in most cases is not far from it.
-  - You can't do better than Bayes error unless you are overfitting.
-  - `Avoidable bias = Training error - Human (Bayes) error`
-  - `Variance = Dev error - Training error`
+		  | Humano                     | 1%   | 7.5% |
+		  | -------------------------- | ---- | ---- |
+		  | **Error de entrenamiento** | 8%   | 8%   |
+		  | **Error de desarrollo**    | 10%  | 10%  |
+  - En el ejemplo de la izquierda, como el error humano es del 1%, nos centraremos en el **bias**.
+  - En la derecha, como el error humano es del 7.5%, nos centraremos en la **varianza**.
+  - El error humano tiene un proxy (estimado) para el error óptimo de Bayes. El error óptimo de Bayes es siempre menor (mejor), aunque el humano no está muy lejos de este.
+  - No se puede mejorar el error de Bayes a menos que se sobreajuste.
+  - `bias evitable= error de entrenamiento- error humano (Bayes)`
+  - `Varianza = error de desarrollo - error de entrenamiento`
 
-### Understanding human-level performance
+### Comprendiendo el desempeño a nivel humano
 
-- When choosing human-level performance, it has to be chosen in the terms of what you want to achieve with the system.
-- You might have multiple human-level performances based on the human experience. Then you choose the human-level performance (proxy for Bayes error) that is more suitable for the system you're trying to build.
-- Improving deep learning algorithms is harder once you reach a human-level performance.
-- Summary of bias/variance with human-level performance:
-  1. human-level error (proxy for Bayes error)
-     - Calculate `avoidable bias = training error - human-level error`
-     - If **avoidable bias** difference is the bigger, then it's *bias* problem and you should use a strategy for **bias** resolving.
-  2. training error
-     - Calculate `variance = dev error - training error`
-     - If **variance** difference is bigger, then you should use a strategy for **variance** resolving.
-  3. Dev error
-- So having an estimate of human-level performance gives you an estimate of Bayes error. And this allows you to more quickly make decisions as to whether you should focus on trying to reduce a bias or trying to reduce the variance of your algorithm.
-- These techniques will tend to work well until you surpass human-level performance, whereupon you might no longer have a good estimate of Bayes error that still helps you make this decision really clearly. 
+- Se pueden tener distintos desempeño a nivel humano dependiendo de la experiencia. Se escoge un desempeño que se ajuste más al sistema que se desea construir.
+- Mejorar los algoritmos de deep learning algorithms es más complicado una vez se alcanza el desempeño humano.
+- Resumen de bias/variance con desempeño humano:
+  1. error humano (proxy al error de Bayes)
+     - Calcular `bias evitable = error de entrenamiento - error humano`
+     - Si la diferencia de **bias evitable** es mayor, es un problema de bias y se debería adoptar una estrategia para resolverlo.
+  2. error de entrenamiento
+     - Calcular `varianza = error de desarrollo - error de entrenamiento`
+     - Si la diferencia de **varianza** es mayor, usar una estrategia para atacar la varianza.
+  3. error de desarrollo
+- Tener una estimación del nivel de desempeño humano ofrece una estimación del error de Bayes. Esto permite tomar decisiones más rápido dependiendo de cuál sea el objetivo.
+- Estas técnicas funcionan bien siempre que no se pase el nivel de desempeño humano. 
 
-### Surpassing human-level performance
+### Sobrepasando el nivel de desempeño humano
 
-- In some problems, deep learning has surpassed human-level performance. Like:
-  - Online advertising.
-  - Product recommendation.
-  - Loan approval.
-- The last examples are not natural perception task, rather learning on structural data. Humans are far better in natural perception tasks like computer vision and speech recognition.
-- It's harder for machines to surpass human-level performance in natural perception task. But there are already some systems that achieved it.
+- Hay campos en los que el deep learning ha pasado al hombre:
+  - Publicidad online.
+  - Recomendación de productos.
+  - Aprobación de préstamos.
+- Los últimos ejemplos no son perceptibles de forma natural. Los humanos son mucho mejor en percepciones naturales como visión artificial o reconocimiento de voz.
+- Es más complicado superar a los hombres en este tipo de taras, pero hay sistemas que ya lo han conseguido.
 
-### Improving your model performance
+### Mejorando el rendimiento del modelo
 
-- The two fundamental asssumptions of supervised learning:
-  1. You can fit the training set pretty well. This is roughly saying that you can achieve low **avoidable bias**. 
-  2. The training set performance generalizes pretty well to the dev/test set. This is roughly saying that **variance** is not too bad.
-- To improve your deep learning supervised system follow these guidelines:
-  1. Look at the difference between human level error and the training error - **avoidable bias**.
-  2. Look at the difference between the dev/test set and training set error - **Variance**.
-  3. If **avoidable bias** is large you have these options:
-     - Train bigger model.
-     - Train longer/better optimization algorithm (like Momentum, RMSprop, Adam).
-     - Find better NN architecture/hyperparameters search.
-  4. If **variance** is large you have these options:
-     - Get more training data.
-     - Regularization (L2, Dropout, data augmentation).
-     - Find better NN architecture/hyperparameters search.
+- Existen dos asunciones en el lenguaje supervisado:
+  1. Se puede ajustar el training set muy bien. En otras palabras, se puede alcanzar una baja **bias evitable**. 
+  2. El rendimiento del conjunto de entrenamiento se generaliza bastante bien para los set dev/test. La **varianza** no es tan mala.
+- Para mejorar el deep learning supervisado seguir esta guía:
+  1. Observar la diferencia entre el nivel de error humano y el error de entrenamiento - **bias evitable**.
+  2. Observar la diferencia entre el error de los set dev/test y el training set - **varianza**.
+  3. Con **bias evitable**:
+     - Entrenar un modelo mayor.
+     - Entrenar durante más tiempo/ mejores algoritmos de optimización (impulso, RMSprop, Adam).
+     - Encontrar una mejor arquitectura de NN/búsqueda de hiperparámetros.
+  4. Con **varianza** :
+     - Obtener más datos para el entrenamiento.
+     - Regularizar (L2, Dropout, aumentar datos).
+     - Encontrar una mejor arquitectura de NN/búsqueda de hiperparámetros.
 
+## Estrategia de ML 2
 
+### Realización de análisis de errores
 
-## ML Strategy 2
+- Análisis de errores - proceso de examinar manualmente fallos que realiza el algoritmo. Puede dar información sobre qué hacer después:
+  - En la clasificación de gatos, Si se tiene un 10% de error en el dev sety se desea reducir.
+  - Se descubre que algunos de los datos etiquetados mal son perros que se parecen a gatos. ¿Se debería mejorar en el reconocimiento de perros? (Podría tomar semanas)
+  - Análisis de error de aproximación:
+    - Se obtienen 100 muestras del dev set mal etiquetadas de forma aleatoria.
+    - Contar cuántos perror hay.
+    - Si 5 de 100 son perros, entrenar el clasificador para que sea mejor con los perros reducirá el error hasta un 9.5% (a esto se le llama techo), lo cual puede ser muy poco.
+    - Si 50 de 100 son perros se puede reducir el error hasta un 5%, lo cuál es razonable y es en lo que habría que trabajar.
+- Los análisis de errores ayudan a analizar el error antes de tomar medidas que podría llevar mucho tiempo y noser necesarias.
+- A veces, se pueden evaluar múltiples errores en paralelo y escoger la mejor idea:
 
-### Carrying out error analysis
+		  | Image        | Dog    | Great Cats | blurry  | Instagram filters |    Comments    |
+		  | ------------ | ------ | ---------- | ------- | ----------------- |--------------- |
+		  | 1            | ✓     |            |         | ✓                 |  Pitbull       |
+		  | 2            | ✓     |            | ✓       | ✓                |                |
+		  | 3            |        |            |         |                   |Rainy day at zoo|
+		  | 4            |        | ✓         |         |                   |                |
+		  | ....         |        |            |         |                   |                |
+		  | **% totals** | **8%** | **43%**    | **61%** |      **12%**      |                |
+- En este ejemplo se tendría que trabajar en great cats o en blurry images para mejorar el desempeño.
 
-- Error analysis - process of manually examining mistakes that your algorithm is making. It can give you insights into what to do next. E.g.:
-  - In the cat classification example, if you have 10% error on your dev set and you want to decrease the error.
-  - You discovered that some of the mislabeled data are dog pictures that look like cats. Should you try to make your cat classifier do better on dogs (this could take some weeks)?
-  - Error analysis approach:
-    - Get 100 mislabeled dev set examples at random.
-    - Count up how many are dogs.
-    - if 5 of 100 are dogs then training your classifier to do better on dogs will decrease your error up to 9.5% (called ceiling), which can be too little.
-    - if 50 of 100 are dogs then you could decrease your error up to 5%, which is reasonable and you should work on that.
-- Based on the last example, error analysis helps you to analyze the error before taking an action that could take lot of time with no need.
-- Sometimes, you can evaluate multiple error analysis ideas in parallel and choose the best idea. Create a spreadsheet to do that and decide, e.g.:
+### Limpiando datos incorrectamente etiquetados
 
-  | Image        | Dog    | Great Cats | blurry  | Instagram filters |    Comments    |
-  | ------------ | ------ | ---------- | ------- | ----------------- |--------------- |
-  | 1            | ✓      |            |         | ✓                 |  Pitbull       |
-  | 2            | ✓      |            | ✓       | ✓                 |                |
-  | 3            |        |            |         |                   |Rainy day at zoo|
-  | 4            |        | ✓          |         |                   |                |
-  | ....         |        |            |         |                   |                |
-  | **% totals** | **8%** | **43%**    | **61%** |      **12%**      |                |
-- In the last example you will decide to work on great cats or blurry images to improve your performance.
-- This quick counting procedure, which you can often do in, at most, small numbers of hours can really help you make much better prioritization decisions, and understand how promising different approaches are to work on. 
+- Los algoritmos de DL son bastante robustos con los errores aleatorios del training set, pero menos con los errores sistemáticos.
+- Si se desea comprobar si hay datos mal etiquetados en el set dev/test, se podría intentar realizar un análisis de errores con la columna mal etiquetada:
 
-### Cleaning up incorrectly labeled data
+		  | Image        | Dog    | Great Cats | blurry  | Mislabeled | Comments |
+		  | ------------ | ------ | ---------- | ------- | ---------- | -------- |
+		  | 1            | ✓     |            |         |            |          |
+		  | 2            | ✓     |            | ✓      |            |          |
+		  | 3            |        |            |         |            |          |
+		  | 4            |        | ✓         |         |            |          |
+		  | ....         |        |            |         |            |          |
+		  | **% totals** | **8%** | **43%**    | **61%** | **6%**     |          |
+  - Entonces:
+    - Si el error general del dev set: 10%
+      - Puede deberse por datos incorrectos: 0.6%
+      - Otras causas: 9.4%
+    - Centrarse en el 9.4% de error sería más acertado.
+- Considerar estas indicaciones al corregir muestras de dev/test mal etiquetadas:
+  - Aplicar el mismo proceso al dev y al test set para asegurar que continuan viniendo de la misma distribución.
+  - Los datos de entreno y (dev/test) quizás vienen de distintas distribuciones.
+  - Puede estar correcto que un train set venga de una distribución ligeramente cambiada.
 
-- DL algorithms are quite robust to random errors in the training set but less robust to systematic errors. But it's OK to go and fix these labels if you can.
-- If you want to check for mislabeled data in dev/test set, you should also try error analysis with the mislabeled column. Ex:
+### Contruir el primer sistema rápidamente, después iterar
 
-  | Image        | Dog    | Great Cats | blurry  | Mislabeled | Comments |
-  | ------------ | ------ | ---------- | ------- | ---------- | -------- |
-  | 1            | ✓      |            |         |            |          |
-  | 2            | ✓      |            | ✓       |            |          |
-  | 3            |        |            |         |            |          |
-  | 4            |        | ✓          |         |            |          |
-  | ....         |        |            |         |            |          |
-  | **% totals** | **8%** | **43%**    | **61%** | **6%**     |          |
-  - Then:
-    - If overall dev set error: 10%
-      - Then errors due to incorrect data: 0.6%
-      - Then errors due to other causes: 9.4%
-    - Then you should focus on the 9.4% error rather than the incorrect data.
-- Consider these guidelines while correcting the dev/test mislabeled examples:
-  - Apply the same process to your dev and test sets to make sure they continue to come from the same distribution.
-  - Consider examining examples your algorithm got right as well as ones it got wrong. (Not always done if you reached a good accuracy)
-  - Train and (dev/test) data may now come from a slightly different distributions.
-  - It's very important to have dev and test sets to come from the same distribution. But it could be OK for a train set to come from slightly other distribution.
+- Los pasos de un proyecto de DL:
+  - Configurar los set dev/test y métrica
+  - Contruir un sistema inicial rápidamente
+  - Usar un análisis de bias/varianza y análisis de errores para priorizar los siguiente pasos.
 
-### Build your first system quickly, then iterate
+### Entrenando y testeando en distribuciones diferentes
 
-- The steps you take to make your deep learning project:
-  - Setup dev/test set and metric
-  - Build initial system quickly
-  - Use Bias/Variance analysis & Error analysis to prioritize next steps.
+- Muchos equipos trabajan con aplicaciones de DL que han sido entrenadas con sets de entrenamiento distintos a los dev/test debido al hambre de datos que tiene el DL.
+- Estrategias a seguir:
+  - Opción 1 (no recomendada): Mezclar todos los datos y extraer de forma aleatoria los sets de entrenamiento y dev/test.
+    - Ventajas: todos los conjuntos vienen de la misma distribución.
+    - Desventajas: la otra distribución (mundo real) que estaba en los set dev/test ocurrirá menos en los nuevos conjuntos dev/set y quizás no es lo que se desea conseguir.
+  - Opción 2: Tomar algunas muestras de los set dev/testy añadirlas al set de entrenamiento.
+    - Ventajas: la distribución que era importante es ahora el objetivo.
+    - Desventaja: la distribución en los train y dev/test set son distintas. Pero se consigue un mejor desempeño a largo plazo.
 
-### Training and testing on different distributions
+### Bias y varianza con distribuciones de datos disparejos
 
-- A lot of teams are working with deep learning applications that have training sets that are different from the dev/test sets due to the hunger of deep learning to data.
-- There are some strategies to follow up when training set distribution differs from dev/test sets distribution.
-  - Option one (not recommended): shuffle all the data together and extract randomly training and dev/test sets.
-    - Advantages: all the sets now come from the same distribution.
-    - Disadvantages: the other (real world) distribution that was in the dev/test sets will occur less in the new dev/test sets and that might be not what you want to achieve.
-  - Option two: take some of the dev/test set examples and add them to the training set.
-    - Advantages: the distribution you care about is your target now.
-    - Disadvantage: the distributions in training and dev/test sets are now different. But you will get a better performance over a long time.
-
-### Bias and Variance with mismatched data distributions
-
-- Bias and Variance analysis changes when training and Dev/test set is from the different distribution.
-- Example: the cat classification example. Suppose you've worked in the example and reached this
-  - Human error: 0%
+- El análisis de bias y varianza cambia cuando los conjuntos vienen de distintas distribuciones.
+- Ejemplo: el clasificador de gatos
+  - Error humano: 0%
   - Train error: 1%
   - Dev error: 10%
-  - In this example, you'll think that this is a variance problem, but because the distributions aren't the same you can't tell for sure. Because it could be that train set was easy to train on, but the dev set was more difficult.
-- To solve this issue we create a new set called train-dev set as a random subset of the training set (so it has the same distribution) and we get:
-  - Human error: 0%
+  - En este ejemplo se pensaría que es un problema de varianza, pero es posible asegurarse debido a las distribuciones.
+- Para resolverlo se crea un set llamado train-dev como un subconjunto del training set (misma distribución):
+  - Error humano: 0%
   - Train error: 1%
   - Train-dev error: 9%
   - Dev error: 10%
-  - Now we are sure that this is a high variance problem.
-- Suppose we have a different situation:
-  - Human error: 0%
+  - Ahora se puede confirmar que es un problema de varianza alta.
+- Distinta situación:
+  - Error humano: 0%
   - Train error: 1%
   - Train-dev error: 1.5%
   - Dev error: 10%
-  - In this case we have something called *Data mismatch* problem.
-- Conclusions:
-  1. Human-level error (proxy for Bayes error)
-  2. Train error
-     - Calculate `avoidable bias = training error - human level error`
-     - If the difference is big then its **Avoidable bias** problem then you should use a strategy for high **bias**.
-  3. Train-dev error
-     - Calculate `variance = training-dev error - training error`
-     - If the difference is big then its high **variance** problem then you should use a strategy for solving it.
-  4. Dev error
-     - Calculate `data mismatch = dev error - train-dev error`
-     - If difference is much bigger then train-dev error its **Data mismatch** problem.
-  5. Test error
-     - Calculate `degree of overfitting to dev set = test error - dev error`
-     - Is the difference is big (positive) then maybe you need to find a bigger dev set (dev set and test set come from the same distribution, so the only way for there to be a huge gap here, for it to do much better on the dev set than the test set, is if you somehow managed to overfit the dev set).
-- Unfortunately, there aren't many systematic ways to deal with data mismatch. There are some things to try about this in the next section.
+  - En este caso, sí se puede decir que hay un problema llamado *Data mismatch* (	datos desajustados).
+- Conclusión:
+  1. Error humano(proxy del error de Bayes)
+  2. Error de entrenamiento
+     - Calcular `bias evitable = error de entrenamiento - error humano`
+     - Si la diferencia es alta, es un problema de **bias evitable**, usar una estrategia de **bias** elevada.
+  3. Error de train-dev
+     - Calcular `varianza = error train-dev - error de entrenamiento`
+     - Si la diferencia es alta, es un problema de **varianza** elevada.
+  4. Error de dev
+     - Calcular `data mismatch = error dev - error train-dev`
+     - Si la diferencia es mucho mayor, el error de train-dev es un problema de **data mismatch**.
+  5. Error de test
+     - Calcular `grado de sobreentrenamiento sobre el dev set = error test- error dev`
+     - Si la diferencia es alta (positiva), quizás se necesita un mayor conjunto dev (dev set y test set vienen de la misma distribución, para mejorar en el dev set con respecto al test es sobreentrenando de alguna manera el dev set).
+- Desafortunadamente, no hay muchas formas sistemáticas de lidiar con este problema de data mismatch.
 
-### Addressing data mismatch
+### Abordar la discrepancia de datos
 
-- There aren't completely systematic solutions to this, but there some things you could try.
-1. Carry out manual error analysis to try to understand the difference between training and dev/test sets.
-2. Make training data more similar, or collect more data similar to dev/test sets.
-- If your goal is to make the training data more similar to your dev set one of the techniques you can use **Artificial data synthesis** that can help you make more training data.
-    - Combine some of your training data with something that can convert it to the dev/test set distribution.
-      - Examples:
-        1. Combine normal audio with car noise to get audio with car noise example.
-        2. Generate cars using 3D graphics in a car classification example.
-    - Be cautious and bear in mind whether or not you might be accidentally simulating data only from a tiny subset of the space of all possible examples because your NN might overfit these generated data (like particular car noise or a particular design of 3D graphics cars).
+- No hay un método sistemático, pero hay algunas posibles indicaciones.
+1. Realizar un análisis de errores manual para tratar de comprender la diferencia entre los conjuntos de entrenamiento y dev/test.
+2. Conseguir datos de entrenamiento más similares u obtener más datos similares a los de dev/test.
+- Si el objetivo es que los datos de entrenamiento sean más similares a los del dev, una técnica que puede usarse es la **síntesis de datos artificiales** .
+    - Combina parte de tus datos de entrenamiento con algo que pueda transformarlo a la distribución de dev/test.
+      - Ejemplos:
+        1. Combinar audio normal con ruido de coches para obtener audio con ruido de coches de fondo.
+        2. Generar coches usando gráficos 3D en un ejemplo de clasificación de coches.
+    - Ser precavido y tener en cuenta si es posible que esté simulando datos accidentalmente o no de solo un pequeño subconjunto de todos los posibles casos porque es posible que la red neuronal se sobreentrene con estos datos.
 
-### Transfer learning
+### Aprendizaje por transferencia
 
-- Apply the knowledge you took in a task A and apply it in another task B.
-- For example, you have trained a cat classifier with a lot of data, you can use the part of the trained NN it to solve x-ray classification problem.
-- To do transfer learning, delete the last layer of NN and it's weights and:
-  1. Option 1: if you have a small data set - keep all the other weights as a fixed weights. Add a new last layer(-s) and initialize the new layer weights and feed the new data to the NN and learn the new weights.
-  2. Option 2: if you have enough data you can retrain all the weights.
-- Option 1 and 2 are called **fine-tuning** and training on task A called **pretraining**.
-- When transfer learning make sense:
-  - Task A and B have the same input X (e.g. image, audio).
-  - You have a lot of data for the task A you are transferring from and relatively less data for the task B your transferring to.
-  - Low level features from task A could be helpful for learning task B.
+- Aplicar el conocimiento obtenido en la tarea A y aplicarlo en una tarea B.
+- Para realizar un aprendizaje por transferencia, eliminar la última capa de la NN y sus pesos y:
+  1. Opción 1: Si se tiene un data set pequeño - mantener los demás pesos como pesos ajustados. Añadir una nueva capa/s e inicializar los nuevos pesos de las capas y proveer con los nuevos datos a la NN y aprender los nuevos pesos.
+  2. Opción 2: Si se tiene suficientes datos, se pueden reentrenar todos los pesos.
+- Las opciones 1 y 2 son llamadas **fine-tuning** (ajuste fino) y el entreno en la tarea A, **pretraining**.
+- Cuándo tiene sentido un aprendizaje por transferencia:
+  - Las tareas A y B tienen los mismos datos de entrada.
+  - Se tienen muchos datos en la tarea A, pero relativamente menos en la tarea B.
+  - Características de bajo nivel de la tarea A podrían ser útiles para la tarea B.
 
-### Multi-task learning
+### Aprendizaje multi-tarea
 
-- Whereas in transfer learning, you have a sequential process where you learn from task A and then transfer that to task B. In multi-task learning, you start off simultaneously, trying to have one neural network do several things at the same time. And then each of these tasks helps hopefully all of the other tasks. 
-- Example:
-  - You want to build an object recognition system that detects pedestrians, cars, stop signs, and traffic lights (image has multiple labels).
-  - Then Y shape will be `(4,m)` because we have 4 classes and each one is a binary one.
-  - Then   
-  `Cost = (1/m) * sum(sum(L(y_hat(i)_j, y(i)_j))), i = 1..m, j = 1..4`, where   
-  `L = - y(i)_j * log(y_hat(i)_j) - (1 - y(i)_j) * log(1 - y_hat(i)_j)`
-- In the last example you could have trained 4 neural networks separately but if some of the earlier features in neural network can be shared between these different types of objects, then you find that training one neural network to do four things results in better performance than training 4 completely separate neural networks to do the four tasks separately. 
-- Multi-task learning will also work if y isn't complete for some labels. For example:
-  ```
-  Y = [1 ? 1 ...]
-      [0 0 1 ...]
-      [? 1 ? ...]
-  ```
-  - And in this case it will do good with the missing data, just the loss function will be different:   
+- En el aprendizaje multi-tarea se comienza con una NN que realizar el aprendizaje de varias tareas de forma simultánea. Y, con suerte, cada una de las tareas ayuda a las demás. 
+- Ejemplo:
+  - Se desea construir un sistema de reconocimiento de objetos que detecte peatones, automóviles, señales de alto y semáforos (la imagen tiene varias etiquetas).
+  - Entonces la forma de Y será `(4, m)` porque tenemos 4 clases y cada una es binaria.
+  - Entonces   
+		  `Cost = (1/m) * sum(sum(L(y_hat(i)_j, y(i)_j))), i = 1..m, j = 1..4`, donde   
+		  `L = - y(i)_j * log(y_hat(i)_j) - (1 - y(i)_j) * log(1 - y_hat(i)_j)`
+- Entrenar una red neuronal para realizar cuatro tareas da como resultado un mejor rendimiento que entrenar 4 redes neuronales completamente separadas para hacer las cuatro tareas por separado. 
+- El aprendizaje multitarea también funciona si y no está completa para algunas etiquetas:
+
+		  Y = [1 ? 1 ...]
+		      [0 0 1 ...]
+		      [? 1 ? ...]
+  - Y en este caso funcionará bien con los datos faltantes, pero la función de pérdida será diferente:   
     `Loss = (1/m) * sum(sum(L(y_hat(i)_j, y(i)_j) for all j which y(i)_j != ?))`
-- Multi-task learning makes sense:
-  1. Training on a set of tasks that could benefit from having shared lower-level features.
-  2. Usually, amount of data you have for each task is quite similar.
-  3. Can train a big enough network to do well on all the tasks.
-- If you can train a big enough NN, the performance of the multi-task learning compared to splitting the tasks is better.
-- Today transfer learning is used more often than multi-task learning.
+- Cuando usar aprendizaje multi-tarea:
+  1. Entrenamiento de un conjunto de tareas que podrían beneficiarse de tener funciones compartidas a bajo nivel.
+  2. La cantidad de datos que se tiene para cada tarea es bastante similar.
+  3. Se puede entrenar una red los suficientemente grande para que lo haga bien en todas las tareas.
+- Si se entrena una NN lo suficientemente grande, el rendimiento de la multitarea es mejor que de forma separadas.
+- A día de hoy, el aprendizaje por transferencia es más usado que por multitarea.
 
-### What is end-to-end deep learning?
+### ¿Qué es el aprendizaje profundo de extremo a extremo?
 
-- Some systems have multiple stages to implement. An end-to-end deep learning system implements all these stages with a single NN.
-- Example 1:
-  - Speech recognition system:
-    ```
-    Audio ---> Features --> Phonemes --> Words --> Transcript    # non-end-to-end system
-    Audio ---------------------------------------> Transcript    # end-to-end deep learning system
-    ```
-  - End-to-end deep learning gives data more freedom, it might not use phonemes when training!
-- To build the end-to-end deep learning system that works well, we need a big dataset (more data then in non end-to-end system). If we have a small dataset the ordinary implementation could work just fine.
-- Example 2:
-  - Face recognition system:
-    ```
-    Image ---------------------> Face recognition    # end-to-end deep learning system
-    Image --> Face detection --> Face recognition    # deep learning system - best approach for now
-    ```
-  - In practice, the best approach is the second one for now.
-  - In the second implementation, it's a two steps approach where both parts are implemented using deep learning.
-  - Its working well because it's harder to get a lot of pictures with people in front of the camera than getting faces of people and compare them.
-  - In the second implementation at the last step, the NN takes two faces as an input and outputs if the two faces are the same person or not.
-- Example 3:
-  - Machine translation system:
-    ```
-    English --> Text analysis --> ... --> French    # non-end-to-end system
-    English ----------------------------> French    # end-to-end deep learning system - best approach
-    ```
-  - Here end-to-end deep leaning system works better because we have enough data to build it.
-- Example 4:
-  - Estimating child's age from the x-ray picture of a hand:
-  ```
-  Image --> Bones --> Age    # non-end-to-end system - best approach for now
-  Image ------------> Age    # end-to-end system
-  ```
-  - In this example non-end-to-end system works better because we don't have enough data to train end-to-end system.
+- Algunos sistemas tienen varias etapas para implementar. Un sistema de aprendizaje profundo de extremo a extremo (end-to-end deep learning) implementa todas estas etapas con una única NN.
+- Ejemplo 1:
+  - Sistema de reconocimiento de voz:
 
-### Whether to use end-to-end deep learning
+		    Audio ---> Características --> Fonemas--> Palabras--> Transcripción # non-end-to-end system
+			Audio ---------------------------------------> Transcripción # end-to-end deep learning system
 
-- Pros of end-to-end deep learning:
-  - Let the data speak. By having a pure machine learning approach, your NN learning input from X to Y may be more able to capture whatever statistics are in the data, rather than being forced to reflect human preconceptions.
-  - Less hand-designing of components needed.
-- Cons of end-to-end deep learning:
-  - May need a large amount of data.
-  - Excludes potentially useful hand-design components (it helps more on the smaller dataset).
-- Applying end-to-end deep learning:
-  - Key question: Do you have sufficient data to learn a function of the **complexity** needed to map x to y?
-  - Use ML/DL to learn some individual components.
-  - When applying supervised learning you should carefully choose what types of X to Y mappings you want to learn depending on what task you can get data for.
+  - End-to-end deep learning ofrece más libertad a los datos, quizás no es necesario hacer uso de los fonemas.
+  - Para construir el sistema de deep learning end-to-end que funcione bien, necesitamos un gran conjunto de datos (más datos que en un sistema que no lo sea). Si tenemos un pequeño conjunto de datos, la implementación ordinaria podría funcionar bien.
+- Ejemplo 2:
+  - Sistema de reconocimiento facial:
+
+		    Imagen ---------------------> Reconocimiento facial    # end-to-end deep learning system
+		    Imagen --> Detección de caras--> Reconocimiento facial # deep learning system - mejor aproximación
+
+  - En la práctica, la mejor aproximación es la segunda por ahora.
+  - En la segunda implementación, es una aproximación de dos pasos donde ambas partes son implementadas usando deep learning.
+  - Funciona bien porque es más difícil obtener muchas fotos con personas frente a la cámara que ver caras de personas y compararlas..
+  - En el último paso de la segunda implementación, la NN toma dos caras como entrada y salidas si las dos caras son la misma persona o no.
+- Ejemplo 3:
+  - Sistema de traducción automática:
+
+		    Inglés --> Análisis de texto--> ... --> Francés # non-end-to-end system
+		    Inglés----------------------------> Francés # end-to-end deep learning system - mejor aproximación
+
+  - End-to-end funciona mejor porque se tiene suficientes datos para construirlo.
+- Ejemplo 4:
+  - Estimación de la edad del niño a partir de la imagen de rayos X de una mano:
+ 
+			  Imagen --> Huesos--> Edad # non-end-to-end system - mejor aproximación
+			  Imagen ------------> Edad # end-to-end system
+ 
+  - Funciona mejor el primer caso porque no se tienen suficientes datos de entrada para un sistema end-to-end.
+
+### Cuándo usar end-to-end deep learning
+
+- Ventajas del end-to-end deep learning:
+  - Al tener un enfoque de aprendizaje automático puro, la entrada de la NN de X a Y puede ser más capaz de capturar las estadísticas que se encuentran en los datos, en lugar de verse obligado a reflejar las ideas preconcebidas humanas. 
+  - Menos diseños a mano de los componentes necesarios.
+- Contras del end-to-end deep learning:
+  - Quizás se necesita un mayor cantidad de datos.
+  - Excluye componentes de diseño a mano potencialmente útiles (ayudan más en conjuntos de datos más pequeños).
+- Aplicando end-to-end deep learning:
+  - Pregunta clave: ¿Se tienen datos suficientes para aprender una función de la **complejidad** necesaria para mapear x con y?
+  - Usar ML/DL para aprender algunos componentes individuales.
+  - Al aplicar el aprendizaje supervisado se debe elegir cuidadosamente qué tipos de asignaciones de X a Y se quiere aprender en función de la tarea para la que se pueda obtener datos.
