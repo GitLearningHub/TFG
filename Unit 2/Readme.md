@@ -1,7 +1,7 @@
 # Curso 2: Mejorando redes neuronales profundas: Ajuste de hiperparámetros, regularización y optimización
-<br>
+
 ## Índice
-   * [Aspectos prácticos del Deep Learning](#aspectos-prácticos-del-deep-learning)
+ * [Aspectos prácticos del Deep Learning](#aspectos-prácticos-del-deep-learning)
       * [Train / Dev / Test sets](#train--dev--test--sets)
       * [Bias / Variance](#bias--variance)
       * [Receta básica para machine learning](#receta-básica-para-machine-learning)
@@ -17,7 +17,7 @@
       * [Notas sobre la implementación del gradiente](#notas-sobre-la-implementación-del-gradiente)
       * [Resumen inicialización](#resumen-inicialización)
       * [Resumen regularización](#resumen-regularización)
-   * [Optimizando algoritmos](#optimizando-algoritmos)
+ * [Optimizando algoritmos](#optimizando-algoritmos)
       * [Descenso del gradiente con mini-lotes](#descenso-del-gradiente-con-mini-lotes)
       * [Comprendiendo el descenso del gradiente con mini-lotes](#comprendiendo-el-descenso-del-gradiente-con-mini-lotes)
       * [Promedios ponderados exponencialmente](#promedios-ponderados-exponencialmente)
@@ -28,7 +28,7 @@
       * [Algoritmo de optimización de Adam](#algoritmo-de-optimización-de-adam)
       * [Decaída del ratio de aprendizaje](#decaída-del-ratio-de-aprendizaje)
       * [El problema de los óptimos locales](#el-problema-de-los-óptimos-locales)
-   * [Ajuste de hiperparámetros,normalización por lotes y entornos de programación](#ajuste-de-hiperparámetros-normalización-por-lotes-y-entornos-de-programación)
+ * [Ajuste de hiperparámetros,normalización por lotes y entornos de programación](#ajuste-de-hiperparámetros-normalización-por-lotes-y-entornos-de-programación)
       * [Proceso de ajuste](#proceso-de-ajuste)
       * [Usando una escala apropiada para seleccionar hiperparámetros](#usando-una-escala-apropiada-para-seleccionar-hiperparámetros)
       * [Ajuste de hiperparámetros en práctica: Pandas vs. Caviar](#ajuste-de-hiperparámetros-en-práctica-pandas-vs-caviar)
