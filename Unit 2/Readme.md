@@ -2,7 +2,7 @@
 
 ## Índice
  * [Aspectos prácticos del Deep Learning](#aspectos-prácticos-del-deep-learning)
-      * [Train / Dev / Test sets](#train--dev--test--sets)
+      * [Train / Dev / Test sets](#train--dev--test-sets)
       * [Bias / Variance](#bias--variance)
       * [Receta básica para machine learning](#receta-básica-para-machine-learning)
       * [Regularización](#regularización)
