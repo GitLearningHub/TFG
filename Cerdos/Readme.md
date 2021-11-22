@@ -38,7 +38,7 @@ Cada CLIP contiene:
 - depth_scale.npy: escala de valores de píxeles a cm para el sensor de profundidad.
 - inverse\_intrinsic.npy: inverso de los parámetros intrínsecos de la cámara usados para mapear los puntos de profundidad a puntos 3D.
 - mask.png: una máscara binaria con 1 en el perímetro usable y 0 en el resto. (Archivo incorrecto, ignorar).
-- output.json: cajas contenedoras corroboradas y otros datos. Ver [Formato del archivo JSON de corroborados y detecciones](#).
+- output.json: cajas contenedoras corroboradas y otros datos. Ver [Formato del archivo JSON de corroborados y detecciones](#formato-del-archivo-json-de-corroborados-y-detecciones).
 - rot.npy: los parámetros de rotación y traslación para la cámara (no se usan).
 - times.txt: fecha y hora de cada frame capturado.
 
